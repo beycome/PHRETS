@@ -1,5 +1,7 @@
 <?php namespace PHRETS\Models\Metadata;
 
+use Illuminate\Support\Arr;
+
 abstract class Base implements \ArrayAccess
 {
     /** @var \PHRETS\Session */
@@ -7,7 +9,7 @@ abstract class Base implements \ArrayAccess
     protected $elements = [];
     protected $attributes = [];
     protected $values = [];
-
+	
     /**
      * @return \PHRETS\Session
      */
@@ -15,7 +17,7 @@ abstract class Base implements \ArrayAccess
     {
         return $this->session;
     }
-
+	
     /**
      * @param mixed $session
      * @return $this
@@ -25,7 +27,7 @@ abstract class Base implements \ArrayAccess
         $this->session = $session;
         return $this;
     }
-
+	
     /**
      * @param $name
      * @param array $args
@@ -35,7 +37,7 @@ abstract class Base implements \ArrayAccess
     {
         $name = strtolower($name);
         $action = substr($name, 0, 3);
-
+		
         if ($action === 'set') {
             foreach (array_merge($this->getXmlElements(), $this->getXmlAttributes()) as $attr) {
                 if (strtolower('set' . $attr) == $name) {
@@ -47,15 +49,15 @@ abstract class Base implements \ArrayAccess
         } elseif ($action === 'get') {
             foreach (array_merge($this->getXmlElements(), $this->getXmlAttributes()) as $attr) {
                 if (strtolower('get' . $attr) == $name) {
-                    return \array_get($this->values, $attr);
+                    return Arr::get($this->values, $attr);
                 }
             }
             return null;
         }
-
+		
         throw new \BadMethodCallException;
     }
-
+	
     /**
      * @return array
      */
@@ -63,7 +65,7 @@ abstract class Base implements \ArrayAccess
     {
         return $this->elements;
     }
-
+	
     /**
      * @return array
      */
@@ -71,7 +73,7 @@ abstract class Base implements \ArrayAccess
     {
         return $this->attributes;
     }
-
+	
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Whether a offset exists
@@ -93,7 +95,7 @@ abstract class Base implements \ArrayAccess
         }
         return false;
     }
-
+	
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to retrieve
@@ -107,12 +109,12 @@ abstract class Base implements \ArrayAccess
     {
         foreach (array_merge($this->getXmlElements(), $this->getXmlAttributes()) as $attr) {
             if (strtolower($attr) == strtolower($offset)) {
-                return \array_get($this->values, $attr);
+                return Arr::get($this->values, $attr);
             }
         }
         return null;
     }
-
+	
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to set
@@ -129,7 +131,7 @@ abstract class Base implements \ArrayAccess
     {
         $this->values[$offset] = $value;
     }
-
+	
     /**
      * (PHP 5 &gt;= 5.0.0)<br/>
      * Offset to unset
